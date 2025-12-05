@@ -28,12 +28,16 @@ namespace DiscordDataSummarizer
             if (!Directory.Exists(read_path))
             {
 
-                throw new Exception("Path does not exist");
+                Console.WriteLine("FAIL: Path does not exist\nPress enter to exit.");
+                Console.ReadLine(); // Wait for input
+                throw new Exception("Path doesnt exist");
             }
             else if (!File.Exists(read_path + "\\messages\\index.json")) // Ensure path has messages and index.json
             {
 
-                throw new Exception("Path does not contain 'messages\\index.json', this may not be a data packet, or it may be missing messages, please try again.");
+                Console.WriteLine("FAIL: Path does not contain 'messages\\index.json', this may not be a data packet, or it may be missing messages\npress enter to exit.");
+                Console.ReadLine(); // Wait for input
+                throw new Exception("Path not data packet");
             }
 
             // Get debug info
@@ -70,7 +74,9 @@ namespace DiscordDataSummarizer
             if (channel_map == null)
             {
 
-                throw new Exception("Something went really wrong, and the program was unable to parse " + dir + "\\messages\\index.json\nprocessing cannot continue without this, please try again or make a github issue or something idk if u really want");
+                Console.WriteLine("FAIL: Something went really wrong, and the program was unable to parse " + dir + "\\messages\\index.json\nprocessing cannot continue without this, please try again or make a github issue or something idk if u really want\nPress enter to exit.");
+                Console.ReadLine(); // Wait for input
+                throw new Exception("Bad index");
             }
 
             // Do stuff here
@@ -102,7 +108,9 @@ namespace DiscordDataSummarizer
                     if (result == null)
                     {
 
-                        throw new Exception("Something went wrong parsing file: " + path + "\\messages.json\nThe script will ");
+                        Console.WriteLine("FAIL: Something went wrong parsing file: " + path + "\\messages.json\nPress enter to exit.");
+                        Console.ReadLine(); // Wait for input
+                        throw new Exception("Bad message");
                     }
 
                     foreach (MessageObject msg in result.ToArray())

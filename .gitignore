@@ -10,9 +10,6 @@
 *.userosscache
 *.sln.docstates
 
-# skibidi toilet
-*.sln
-
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
@@ -364,3 +361,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/Discord data summarizer.sln
