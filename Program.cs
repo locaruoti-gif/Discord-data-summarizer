@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
+using ScottPlot;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -45,10 +47,15 @@ namespace DiscordDataSummarizer
             string read = @"" + Console.ReadLine(); // Worlds worst implementation idk how ppl normally do this
             bool show_extra_debug = (read) == "Y" || (read == "y");
 
-            DoStuff(read_path, show_extra_debug);
+            // Get debug info
+            Console.WriteLine("Create graphs for message activity? Y/N\nNote: this will create a file in " + read_path + " and will open the file upon completion.");
+            string read_graph = @"" + Console.ReadLine(); // Still the worlds worst implementation
+            bool do_graphing = (read_graph) == "Y" || (read_graph == "y");
+
+            DoStuff(read_path, show_extra_debug, do_graphing);
         }
 
-        static void DoStuff(string dir, bool show_extra_debug)
+        static void DoStuff(string dir, bool show_extra_debug, bool do_graphing)
         {
 
             int MessagesIn2025 = 0;
@@ -64,6 +71,31 @@ namespace DiscordDataSummarizer
             SortedDictionary<long, long> MessagesPerChannel2022 = new SortedDictionary<long, long>();
             SortedDictionary<long, long> MessagesPerChannel2021 = new SortedDictionary<long, long>();
             SortedDictionary<long, long> MessagesPerChannel2020 = new SortedDictionary<long, long>();
+
+            // graph plotting data, wont be written to unless do_graphing is true
+            ScottPlot.Plot summaryPlot = new();
+            List<double> xs = new List<double>();
+            List<double> ys = new List<double>();
+
+            // Setup vertical ticks
+            ScottPlot.TickGenerators.NumericManual verticalTicks = new();
+
+            verticalTicks.AddMajor(0, "00:00");
+            verticalTicks.AddMajor(0.25, "06:00");
+            verticalTicks.AddMajor(0.5, "12:00");
+            verticalTicks.AddMajor(0.75, "18:00");
+            verticalTicks.AddMajor(1, "24:00");
+
+            // Setup title
+            summaryPlot.Title("Lifetime messages scatter (UTC)");
+            summaryPlot.Axes.Title.FullFigureCenter = false;
+
+            // setup numeric tick generator
+            ScottPlot.TickGenerators.NumericManual yearTicks = new();
+
+            // Too lazy to learn hashset
+            SortedDictionary<int, bool> YearsWithData = new SortedDictionary<int, bool>();
+            int yearsAmount = 0;
 
             Console.WriteLine("Processing messages, this may take a while");
 
@@ -115,6 +147,34 @@ namespace DiscordDataSummarizer
 
                     foreach (MessageObject msg in result.ToArray())
                     {
+
+                        if (do_graphing) {
+
+                            DateTime timestamp = msg.Timestamp;
+                            ys.Add((double)timestamp.TimeOfDay.TotalSeconds / 86400);
+                            xs.Add((double)timestamp.Year + ((double)timestamp.DayOfYear / 365));
+                            //Console.WriteLine(timestamp.TimeOfDay);
+
+                            if (!YearsWithData.ContainsKey(timestamp.Year))
+                            {
+
+                                int year = timestamp.Year;
+                                yearsAmount = yearsAmount + 1;
+                                YearsWithData[timestamp.Year] = true;
+                                yearTicks.AddMajor((float)year, year.ToString() + " Jan");
+                                yearTicks.AddMajor(year + 0.0833, "Feb");
+                                yearTicks.AddMajor(year + 0.1666, "Mar");
+                                yearTicks.AddMajor(year + 0.25, "Apr");
+                                yearTicks.AddMajor(year + 0.3333, "May");
+                                yearTicks.AddMajor(year + 0.4166, "Jun");
+                                yearTicks.AddMajor(year + 0.5, "July");
+                                yearTicks.AddMajor(year + 0.5833, "Aug");
+                                yearTicks.AddMajor(year + 0.666666, "Sep");
+                                yearTicks.AddMajor(year + 0.75, "Oct");
+                                yearTicks.AddMajor(year + 0.83333, "Nov");
+                                yearTicks.AddMajor(year + 0.916666, "Dec");
+                            }
+                        }
 
                         if (msg.Timestamp.Year == 2025)
                         {
@@ -224,6 +284,40 @@ namespace DiscordDataSummarizer
                 "#3: " + max_2020[2].Value.ToString() + " | " + channel_map[max_2020[2].Key] + " \n    " +
                 "#4: " + max_2020[3].Value.ToString() + " | " + channel_map[max_2020[3].Key] + " \n    " +
                 "#5: " + max_2020[4].Value.ToString() + " | " + channel_map[max_2020[4].Key] + " \n ");
+
+
+            // Finish graph
+            if (do_graphing)
+            {
+
+                var sp = summaryPlot.Add.Scatter(xs, ys);
+                sp.MarkerSize = 1;
+                sp.LineWidth = 0;
+
+                summaryPlot.Axes.Left.TickGenerator = verticalTicks;
+                summaryPlot.Axes.Bottom.TickGenerator = yearTicks;
+                summaryPlot.Axes.Bottom.TickLabelStyle.Rotation = -55;
+                summaryPlot.Axes.Bottom.TickLabelStyle.Alignment = Alignment.MiddleRight;
+
+                summaryPlot.YLabel("Time of day");
+                summaryPlot.XLabel("Date");
+                summaryPlot.ScaleFactor = 3;
+
+                //summaryPlot.Layout.Fixed(new PixelPadding(128, 128, 128, 128));
+
+                Console.WriteLine("Creating graph image...");
+                string bruh_dir = dir + "\\SummaryScatter.png";
+                summaryPlot.SavePng(bruh_dir, (Int32)yearsAmount * 750, 1000);//yearsAmount * 1000, 1000);
+
+                Console.WriteLine("Opening image...");
+                var p = new Process();
+                p.StartInfo = new ProcessStartInfo(bruh_dir)
+                {
+                    UseShellExecute = true
+                };
+                p.Start();
+                //Process.Start(bruh_dir);
+            };
 
             Console.WriteLine("Finished, press enter to exit, scroll up to see summarized data");
             Console.ReadLine(); // Wait for user input, once program ends itll close probably
