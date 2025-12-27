@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using ScottPlot;
 using System;
 using System.Diagnostics;
@@ -73,6 +73,11 @@ namespace DiscordDataSummarizer
             int MessagesIn2022 = 0;
             int MessagesIn2021 = 0;
             int MessagesIn2020 = 0;
+            int MessagesIn2019 = 0;
+            int MessagesIn2018 = 0;
+            int MessagesIn2017 = 0;
+            int MessagesIn2016 = 0;
+            int MessagesIn2015 = 0;
 
             SortedDictionary<long, long> MessagesPerChannel2025 = new SortedDictionary<long, long>();
             SortedDictionary<long, long> MessagesPerChannel2024 = new SortedDictionary<long, long>();
@@ -80,6 +85,11 @@ namespace DiscordDataSummarizer
             SortedDictionary<long, long> MessagesPerChannel2022 = new SortedDictionary<long, long>();
             SortedDictionary<long, long> MessagesPerChannel2021 = new SortedDictionary<long, long>();
             SortedDictionary<long, long> MessagesPerChannel2020 = new SortedDictionary<long, long>();
+            SortedDictionary<long, long> MessagesPerChannel2019 = new SortedDictionary<long, long>();
+            SortedDictionary<long, long> MessagesPerChannel2018 = new SortedDictionary<long, long>();
+            SortedDictionary<long, long> MessagesPerChannel2017 = new SortedDictionary<long, long>();
+            SortedDictionary<long, long> MessagesPerChannel2016 = new SortedDictionary<long, long>();
+            SortedDictionary<long, long> MessagesPerChannel2015 = new SortedDictionary<long, long>();
 
             SortedDictionary<DateTime, long> MessagesPerDay = new SortedDictionary<DateTime, long>();
 
@@ -136,6 +146,11 @@ namespace DiscordDataSummarizer
                 MessagesPerChannel2022[channel_id] = 0;
                 MessagesPerChannel2021[channel_id] = 0;
                 MessagesPerChannel2020[channel_id] = 0;
+                MessagesPerChannel2019[channel_id] = 0;
+                MessagesPerChannel2018[channel_id] = 0;
+                MessagesPerChannel2017[channel_id] = 0;
+                MessagesPerChannel2016[channel_id] = 0;
+                MessagesPerChannel2015[channel_id] = 0;
 
                 if (show_extra_debug)
                 {
@@ -239,6 +254,41 @@ namespace DiscordDataSummarizer
                             MessagesIn2020 += 1;
                             MessagesPerChannel2020[channel_id] += 1;
                         }
+                        else if(msg.Timestamp.Year == 2019)
+                        {
+
+                            //Console.WriteLine(msg.Contents);
+                            MessagesIn2019 += 1;
+                            MessagesPerChannel2019[channel_id] += 1;
+                        }
+                        else if(msg.Timestamp.Year == 2018)
+                        {
+
+                            //Console.WriteLine(msg.Contents);
+                            MessagesIn2018 += 1;
+                            MessagesPerChannel2018[channel_id] += 1;
+                        }
+                        else if(msg.Timestamp.Year == 2017)
+                        {
+
+                            //Console.WriteLine(msg.Contents);
+                            MessagesIn2017 += 1;
+                            MessagesPerChannel2017[channel_id] += 1;
+                        }
+                        else if(msg.Timestamp.Year == 2016)
+                        {
+
+                            //Console.WriteLine(msg.Contents);
+                            MessagesIn2016 += 1;
+                            MessagesPerChannel2016[channel_id] += 1;
+                        }
+                        else if(msg.Timestamp.Year == 2015)
+                        {
+
+                            //Console.WriteLine(msg.Contents);
+                            MessagesIn2015 += 1;
+                            MessagesPerChannel2015[channel_id] += 1;
+                        }
                         // Console.WriteLine(msg.Timestamp.Year);
                         //Console.WriteLine(msg.Contents);
                     }
@@ -254,6 +304,11 @@ namespace DiscordDataSummarizer
             Console.WriteLine("this many messages were in 2022: " + MessagesIn2022.ToString());
             Console.WriteLine("this many messages were in 2021: " + MessagesIn2021.ToString());
             Console.WriteLine("this many messages were in 2020: " + MessagesIn2020.ToString());
+            Console.WriteLine("this many messages were in 2019: " + MessagesIn2019.ToString());
+            Console.WriteLine("this many messages were in 2018: " + MessagesIn2018.ToString());
+            Console.WriteLine("this many messages were in 2017: " + MessagesIn2017.ToString());
+            Console.WriteLine("this many messages were in 2016: " + MessagesIn2016.ToString());
+            Console.WriteLine("this many messages were in 2015: " + MessagesIn2015.ToString());
 
             var max_day = MessagesPerDay.OrderByDescending(d => d.Value).ToArray();
             Console.WriteLine("your most active days (month/day/year): \n    " +
@@ -318,6 +373,46 @@ namespace DiscordDataSummarizer
                 "#3: " + max_2020[2].Value.ToString() + " | " + channel_map[max_2020[2].Key] + " \n    " +
                 "#4: " + max_2020[3].Value.ToString() + " | " + channel_map[max_2020[3].Key] + " \n    " +
                 "#5: " + max_2020[4].Value.ToString() + " | " + channel_map[max_2020[4].Key] + " \n ");
+
+            var max_2019 = MessagesPerChannel2019.OrderByDescending(d => d.Value).ToArray();
+            Console.WriteLine("most popular channels in 2019: \n    " +
+                "#1: " + max_2019[0].Value.ToString() + " | " + channel_map[max_2019[0].Key] + " \n    " +
+                "#2: " + max_2019[1].Value.ToString() + " | " + channel_map[max_2019[1].Key] + " \n    " +
+                "#3: " + max_2019[2].Value.ToString() + " | " + channel_map[max_2019[2].Key] + " \n    " +
+                "#4: " + max_2019[3].Value.ToString() + " | " + channel_map[max_2019[3].Key] + " \n    " +
+                "#5: " + max_2019[4].Value.ToString() + " | " + channel_map[max_2019[4].Key] + " \n ");
+
+            var max_2018 = MessagesPerChannel2018.OrderByDescending(d => d.Value).ToArray();
+            Console.WriteLine("most popular channels in 2018: \n    " +
+                "#1: " + max_2018[0].Value.ToString() + " | " + channel_map[max_2018[0].Key] + " \n    " +
+                "#2: " + max_2018[1].Value.ToString() + " | " + channel_map[max_2018[1].Key] + " \n    " +
+                "#3: " + max_2018[2].Value.ToString() + " | " + channel_map[max_2018[2].Key] + " \n    " +
+                "#4: " + max_2018[3].Value.ToString() + " | " + channel_map[max_2018[3].Key] + " \n    " +
+                "#5: " + max_2018[4].Value.ToString() + " | " + channel_map[max_2018[4].Key] + " \n ");
+
+            var max_2017 = MessagesPerChannel2017.OrderByDescending(d => d.Value).ToArray();
+            Console.WriteLine("most popular channels in 2017: \n    " +
+                "#1: " + max_2017[0].Value.ToString() + " | " + channel_map[max_2017[0].Key] + " \n    " +
+                "#2: " + max_2017[1].Value.ToString() + " | " + channel_map[max_2017[1].Key] + " \n    " +
+                "#3: " + max_2017[2].Value.ToString() + " | " + channel_map[max_2017[2].Key] + " \n    " +
+                "#4: " + max_2017[3].Value.ToString() + " | " + channel_map[max_2017[3].Key] + " \n    " +
+                "#5: " + max_2017[4].Value.ToString() + " | " + channel_map[max_2017[4].Key] + " \n ");
+
+            var max_2016 = MessagesPerChannel2016.OrderByDescending(d => d.Value).ToArray();
+            Console.WriteLine("most popular channels in 2016: \n    " +
+                "#1: " + max_2016[0].Value.ToString() + " | " + channel_map[max_2016[0].Key] + " \n    " +
+                "#2: " + max_2016[1].Value.ToString() + " | " + channel_map[max_2016[1].Key] + " \n    " +
+                "#3: " + max_2016[2].Value.ToString() + " | " + channel_map[max_2016[2].Key] + " \n    " +
+                "#4: " + max_2016[3].Value.ToString() + " | " + channel_map[max_2016[3].Key] + " \n    " +
+                "#5: " + max_2016[4].Value.ToString() + " | " + channel_map[max_2016[4].Key] + " \n ");
+
+            var max_2015 = MessagesPerChannel2015.OrderByDescending(d => d.Value).ToArray();
+            Console.WriteLine("most popular channels in 2015: \n    " +
+                "#1: " + max_2015[0].Value.ToString() + " | " + channel_map[max_2015[0].Key] + " \n    " +
+                "#2: " + max_2015[1].Value.ToString() + " | " + channel_map[max_2015[1].Key] + " \n    " +
+                "#3: " + max_2015[2].Value.ToString() + " | " + channel_map[max_2015[2].Key] + " \n    " +
+                "#4: " + max_2015[3].Value.ToString() + " | " + channel_map[max_2015[3].Key] + " \n    " +
+                "#5: " + max_2015[4].Value.ToString() + " | " + channel_map[max_2015[4].Key] + " \n ");
 
 
             // Finish graph
